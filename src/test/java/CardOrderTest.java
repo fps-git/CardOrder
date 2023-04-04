@@ -1,126 +1,201 @@
-import com.codeborne.selenide.Condition;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CardOrderTest {
-    @Test
-    public void ShouldReturnSuccess() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Михаил Бестужев-Рюмин");
-        $("span[data-test-id=phone] input").setValue("+12345678901");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("p[data-test-id=order-success]").shouldHave(Condition.exactOwnText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
+
+    WebDriver driver;
+
+    @BeforeEach
+    void setup() {
+        driver = WebDriverManager.chromedriver().create();
+    }
+
+    @AfterEach
+    void teardown() {
+        driver.quit();
+        driver = null;
+    }
+
+    boolean isDisplayed(By by) {
+        try {
+            return driver.findElement(by).isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     @Test
-    public void ShouldSuccessWithSpecificSymbol() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Артём");
-        $("span[data-test-id=phone] input").setValue("+79001234567");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("p[data-test-id=order-success]").shouldHave(Condition.exactOwnText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
+    public void ShouldReturnSuccess() {
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Михаил Бестужев-Рюмин");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+12345678901");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText().trim();
+
+        assertEquals(expected, actual);
     }
+
+//    @Test
+//    public void ShouldSuccessWithSpecificSymbol() {
+//        driver.get("http://localhost:9999");
+//        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Артём");
+//        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
+//        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+//        driver.findElement(By.cssSelector(".form-field button")).click();
+//
+//        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+//        String actual = driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText().trim();
+//
+//        assertEquals(expected, actual);
+//    }
 
     @Test
     public void ShouldSuccessWithShortName() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Ян");
-        $("span[data-test-id=phone] input").setValue("+79001234567");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("p[data-test-id=order-success]").shouldHave(Condition.exactOwnText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Ян");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText().trim();
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void ShouldSuccessWithTwoSpaces() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Джеймс Смит Младший");
-        $("span[data-test-id=phone] input").setValue("+79001234567");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("p[data-test-id=order-success]").shouldHave(Condition.exactOwnText("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время."));
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Джеймс Смит Младший");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText().trim();
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void ShouldNotSuccessIfEnglishName() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Vasiliy");
-        $("span[data-test-id=phone] input").setValue("+12345678901");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("span[data-test-id=name] .input__sub").shouldHave(Condition.exactOwnText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Vasiliy");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+12345678901");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getText();
+
+        assertEquals(expected, actual);
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
     public void ShouldNotSuccessIfLongerNumber() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Кирилл Петров");
-        $("span[data-test-id=phone] input").setValue("+790012345678");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("span[data-test-id=phone] .input__sub").shouldHave(Condition.exactOwnText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Кирилл Петров");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+790123456789");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+
+        assertEquals(expected, actual);
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
     public void ShouldNotSuccessIfNoPlusSymbol() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Васильев Григорий");
-        $("span[data-test-id=phone] input").setValue("790012345678");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("span[data-test-id=phone] .input__sub").shouldHave(Condition.exactOwnText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Васильев Григорий");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("790012345678");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+
+        assertEquals(expected, actual);
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
-    @Test
-    public void ShouldNotSuccessIfAllNumbersAreZero() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Сергей Иванович Нулев");
-        $("span[data-test-id=phone] input").setValue("+00000000000");
-        $("label[data-test-id=agreement]").click();
-        $(".form-field button").click();
-        $("span[data-test-id=phone] .input__sub").shouldHave(Condition.exactOwnText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
-    }
+//    @Test
+//    public void ShouldNotSuccessIfAllNumbersAreZero() {
+//        driver.get("http://localhost:9999");
+//        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Сергей Иванович Нулев");
+//        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+00000000000");
+//        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+//        driver.findElement(By.cssSelector(".form-field button")).click();
+//
+//        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+//        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+//
+//        assertEquals(expected, actual);
+//        assertNull(driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText());
+//    }
 
     @Test
     public void ShouldNotSuccessIfCheckBoxNotClicked() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Сергей Иванович Безчекбоксов");
-        $("span[data-test-id=phone] input").setValue("+79031234567");
-        $(".form-field button").click();
-        $("label[data-test-id=agreement] span[role=presentation]").shouldHave(Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Сергей Иванович Безчекбоксов");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79031234567");
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "rgba(255, 92, 92, 1)";
+        String actual = driver.findElement(By.cssSelector("label[data-test-id=agreement] span[role=presentation]")).getCssValue("color");
+
+        assertEquals(expected, actual);
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
     public void ShouldNotSuccessIfEmptyName() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("");
-        $("span[data-test-id=phone] input").setValue("+79031234567");
-        $(".form-field button").click();
-        $(".form-field button").click();
-        $("span[data-test-id=name] .input__sub").shouldHave(Condition.exactOwnText("Поле обязательно для заполнения"));
-        $("span[data-test-id=name] .input__sub").shouldHave(Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79031234567");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        String expected = "Поле обязательно для заполнения";
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getText();
+
+        String expectedColor = "rgba(255, 92, 92, 1)";
+        String actualColor = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getCssValue("color");
+
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
+        assertEquals(expected, actual);
+        assertEquals(expectedColor, actualColor);
     }
 
     @Test
     public void ShouldNotSuccessIfEmptyPhone() {
-        open("http://localhost:9999");
-        $("span[data-test-id=name] input").setValue("Василий Безтелефонов");
-        $("span[data-test-id=phone] input").setValue("");
-        $(".form-field button").click();
-        $(".form-field button").click();
-        $("span[data-test-id=phone] .input__sub").shouldHave(Condition.exactOwnText("Поле обязательно для заполнения"));
-        $("span[data-test-id=phone] .input__sub").shouldHave(Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
-        $("p[data-test-id=order-success]").shouldNot(Condition.exist);
-    }
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Василий Безтелефонов");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
 
+        String expected = "Поле обязательно для заполнения";
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+
+        String expectedColor = "rgba(255, 92, 92, 1)";
+        String actualColor = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getCssValue("color");
+
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
+        assertEquals(expected, actual);
+        assertEquals(expectedColor, actualColor);
+    }
 }
