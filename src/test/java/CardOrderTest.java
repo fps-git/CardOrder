@@ -104,7 +104,7 @@ public class CardOrderTest {
         open("http://localhost:9999");
         $("span[data-test-id=name] input").setValue("");
         $("span[data-test-id=phone] input").setValue("+79031234567");
-        $(".form-field button").click();
+        $("label[data-test-id=agreement]").click();
         $(".form-field button").click();
         $("span[data-test-id=name] .input__sub").shouldHave(Condition.exactOwnText("Поле обязательно для заполнения"));
         $("span[data-test-id=name] .input__sub").shouldHave(Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
@@ -116,7 +116,7 @@ public class CardOrderTest {
         open("http://localhost:9999");
         $("span[data-test-id=name] input").setValue("Василий Безтелефонов");
         $("span[data-test-id=phone] input").setValue("");
-        $(".form-field button").click();
+        $("label[data-test-id=agreement]").click();
         $(".form-field button").click();
         $("span[data-test-id=phone] .input__sub").shouldHave(Condition.exactOwnText("Поле обязательно для заполнения"));
         $("span[data-test-id=phone] .input__sub").shouldHave(Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
