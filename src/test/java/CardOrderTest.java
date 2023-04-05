@@ -37,7 +37,7 @@ public class CardOrderTest {
     }
 
     @Test
-    public void ShouldReturnSuccess() {
+    public void shouldReturnSuccess() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Михаил Бестужев-Рюмин");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+12345678901");
@@ -50,22 +50,19 @@ public class CardOrderTest {
         assertEquals(expected, actual);
     }
 
-//    @Test
-//    public void ShouldSuccessWithSpecificSymbol() {
-//        driver.get("http://localhost:9999");
-//        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Артём");
-//        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
-//        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
-//        driver.findElement(By.cssSelector(".form-field button")).click();
-//
-//        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
-//        String actual = driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText().trim();
-//
-//        assertEquals(expected, actual);
-//    }
+    @Test
+    public void shouldSuccessWithSpecificSymbol() {
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Артём");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        assertTrue(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
+    }
 
     @Test
-    public void ShouldSuccessWithShortName() {
+    public void shouldSuccessWithShortName() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Ян");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
@@ -79,7 +76,7 @@ public class CardOrderTest {
     }
 
     @Test
-    public void ShouldSuccessWithTwoSpaces() {
+    public void shouldSuccessWithTwoSpaces() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Джеймс Смит Младший");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79001234567");
@@ -93,7 +90,7 @@ public class CardOrderTest {
     }
 
     @Test
-    public void ShouldNotSuccessIfEnglishName() {
+    public void shouldNotSuccessIfEnglishName() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Vasiliy");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+12345678901");
@@ -101,14 +98,14 @@ public class CardOrderTest {
         driver.findElement(By.cssSelector(".form-field button")).click();
 
         String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
-        String actual = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getText();
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=name].input_invalid .input__sub")).getText();
 
         assertEquals(expected, actual);
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
-    public void ShouldNotSuccessIfLongerNumber() {
+    public void shouldNotSuccessIfLongerNumber() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Кирилл Петров");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+790123456789");
@@ -116,14 +113,14 @@ public class CardOrderTest {
         driver.findElement(By.cssSelector(".form-field button")).click();
 
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
-        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone].input_invalid .input__sub")).getText();
 
         assertEquals(expected, actual);
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
-    public void ShouldNotSuccessIfNoPlusSymbol() {
+    public void shouldNotSuccessIfNoPlusSymbol() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Васильев Григорий");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("790012345678");
@@ -131,43 +128,36 @@ public class CardOrderTest {
         driver.findElement(By.cssSelector(".form-field button")).click();
 
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
-        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone].input_invalid .input__sub")).getText();
 
         assertEquals(expected, actual);
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
-//    @Test
-//    public void ShouldNotSuccessIfAllNumbersAreZero() {
-//        driver.get("http://localhost:9999");
-//        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Сергей Иванович Нулев");
-//        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+00000000000");
-//        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
-//        driver.findElement(By.cssSelector(".form-field button")).click();
-//
-//        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
-//        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
-//
-//        assertEquals(expected, actual);
-//        assertNull(driver.findElement(By.cssSelector("p[data-test-id=order-success]")).getText());
-//    }
+    @Test
+    public void shouldNotSuccessIfAllNumbersAreZero() {
+        driver.get("http://localhost:9999");
+        driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Сергей Иванович Нулев");
+        driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+00000000000");
+        driver.findElement(By.cssSelector("label[data-test-id=agreement]")).click();
+        driver.findElement(By.cssSelector(".form-field button")).click();
+
+        assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
+    }
 
     @Test
-    public void ShouldNotSuccessIfCheckBoxNotClicked() {
+    public void shouldNotSuccessIfCheckBoxNotClicked() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Сергей Иванович Безчекбоксов");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79031234567");
         driver.findElement(By.cssSelector(".form-field button")).click();
 
-        String expected = "rgba(255, 92, 92, 1)";
-        String actual = driver.findElement(By.cssSelector("label[data-test-id=agreement] span[role=presentation]")).getCssValue("color");
-
-        assertEquals(expected, actual);
+        assertTrue(isDisplayed(By.cssSelector("label[data-test-id=agreement].input_invalid")));
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
     }
 
     @Test
-    public void ShouldNotSuccessIfEmptyName() {
+    public void shouldNotSuccessIfEmptyName() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("+79031234567");
@@ -175,18 +165,14 @@ public class CardOrderTest {
         driver.findElement(By.cssSelector(".form-field button")).click();
 
         String expected = "Поле обязательно для заполнения";
-        String actual = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getText();
-
-        String expectedColor = "rgba(255, 92, 92, 1)";
-        String actualColor = driver.findElement(By.cssSelector("span[data-test-id=name] .input__sub")).getCssValue("color");
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=name].input_invalid .input__sub")).getText();
 
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
         assertEquals(expected, actual);
-        assertEquals(expectedColor, actualColor);
     }
 
     @Test
-    public void ShouldNotSuccessIfEmptyPhone() {
+    public void shouldNotSuccessIfEmptyPhone() {
         driver.get("http://localhost:9999");
         driver.findElement(By.cssSelector("span[data-test-id=name] input")).sendKeys("Василий Безтелефонов");
         driver.findElement(By.cssSelector("span[data-test-id=phone] input")).sendKeys("");
@@ -194,13 +180,9 @@ public class CardOrderTest {
         driver.findElement(By.cssSelector(".form-field button")).click();
 
         String expected = "Поле обязательно для заполнения";
-        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getText();
-
-        String expectedColor = "rgba(255, 92, 92, 1)";
-        String actualColor = driver.findElement(By.cssSelector("span[data-test-id=phone] .input__sub")).getCssValue("color");
+        String actual = driver.findElement(By.cssSelector("span[data-test-id=phone].input_invalid .input__sub")).getText();
 
         assertFalse(isDisplayed(By.cssSelector("p[data-test-id=order-success]")));
         assertEquals(expected, actual);
-        assertEquals(expectedColor, actualColor);
     }
 }
